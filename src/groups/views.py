@@ -1,3 +1,7 @@
+"""
+API ViewSets
+"""
+
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -7,7 +11,7 @@ from .serializers import GroupWithNestedSerializer, LinkWithNestedSerializer
 
 class GroupViewSet(viewsets.ModelViewSet):
     """
-    Group API
+    Group viewset
     """
     queryset = Group.objects.all()
     permission_classes = [
@@ -31,6 +35,9 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 
 class LinkViewSet(viewsets.ModelViewSet):
+    """
+    Link viewset
+    """
     queryset = Link.objects.all()
     permission_classes = [
         permissions.AllowAny
