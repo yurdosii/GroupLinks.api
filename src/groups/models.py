@@ -1,15 +1,7 @@
-"""
-API models (Group, Link)
-"""
-
 from django.db import models
 
 
 class Group(models.Model):
-    """
-    Group model
-    Represents group of links (like folder)
-    """
     name = models.CharField(
         verbose_name="Group's name",
         max_length=150,
@@ -40,10 +32,6 @@ class Group(models.Model):
 
 
 class Link(models.Model):
-    """
-    Link model
-    Represents link to source (now it's only video on youtube)
-    """
     url = models.URLField(
         verbose_name="Link to the source (video / article / ...)"
     )
@@ -51,7 +39,7 @@ class Link(models.Model):
         verbose_name='Description about link'
     )
     groups = models.ManyToManyField(
-        Group,
+        Group, 
         verbose_name="Many to many relationship with group",
         related_name="links",
     )
@@ -70,4 +58,4 @@ class Link(models.Model):
         db_table = 'links'
 
     def __str__(self):
-        return f'Link: {self.url}'
+        return f'Link: {self.link}'
