@@ -9,12 +9,17 @@ class Group(models.Model):
         blank=False
     )
     description = models.TextField(
-        verbose_name="Additional group description"
+        verbose_name="Additional group description",
+        null=True,
+        blank=True
     )
     created = models.DateTimeField(
         verbose_name='Timestamp when group was created',
         auto_now_add=True
     )
+
+    # color
+    # position (drag and drop)
 
     class Meta:
         db_table = 'groups'
@@ -27,7 +32,7 @@ class Group(models.Model):
 
 
 class Link(models.Model):
-    link = models.URLField(
+    url = models.URLField(
         verbose_name="Link to the source (video / article / ...)"
     )
     description = models.TextField(
@@ -46,6 +51,8 @@ class Link(models.Model):
         verbose_name="Timestamp when link was added",
         auto_now_add=True
     )
+
+    # position (drag and drop)
 
     class Meta:
         db_table = 'links'
