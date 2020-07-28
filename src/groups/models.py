@@ -52,7 +52,7 @@ class CustomUser(AbstractBaseUser):
         db_table = 'custom_users'
 
     def __str__(self):
-        return f'Custom user - {self.email}'
+        return f'Custom user ({self.id}) - {self.email}'
 
     # 3 метода внизу треба для адмінки (вона їх шототам вимагає)
     def has_perm(self, perm, obj=None):
@@ -110,7 +110,7 @@ class Group(models.Model):
         ]
 
     def __str__(self):
-        return f'Group: {self.name=}'
+        return f'Group: {self.name}'
 
 
 class Link(models.Model):
