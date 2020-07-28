@@ -3,7 +3,17 @@ API serializers
 """
 
 from rest_framework import serializers
-from groups.models import Group, Link
+from groups.models import CustomUser, Group, Link
+
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    """
+    CustomUser serializer
+    """
+    class Meta:
+        ordering = ['name']
+        model = CustomUser
+        fields = ('id', 'username', 'email', 'date_joined')
 
 
 class GroupBaseSerializer(serializers.ModelSerializer):
@@ -32,10 +42,11 @@ class GroupWithNestedSerializer(GroupBaseSerializer):
     """
     Group serializer with nested links
     """
+    owner = CustomUserSerializer(read_only=True)
     links = LinkBaseSerializer(many=True, read_only=True)
 
     class Meta(GroupBaseSerializer.Meta):
-        fields = GroupBaseSerializer.Meta.fields + ('links', )
+        fields = GroupBaseSerializer.Meta.fields + ('links', 'owner')
 
 
 class LinkWithNestedSerializer(LinkBaseSerializer):
