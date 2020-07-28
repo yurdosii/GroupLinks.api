@@ -54,7 +54,9 @@ class CustomUser(AbstractBaseUser):
     def __str__(self):
         return f'Custom user ({self.id}) - {self.email}'
 
-    # 3 метода внизу треба для адмінки (вона їх шототам вимагає)
+    # 3 метода внизу треба для адмінки (вони їй шототам вимагає)
+    # pylint: disable=unused-argument
+    # pylint: disable=no-self-use
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
