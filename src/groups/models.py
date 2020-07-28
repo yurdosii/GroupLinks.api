@@ -1,8 +1,75 @@
 """
 API models (Group, Link)
 """
-
 from django.db import models
+from django.utils import timezone
+from django.contrib.auth.base_user import AbstractBaseUser
+
+from .utils import CustomUserManager
+
+
+class CustomUser(AbstractBaseUser):
+    """
+    Custom user model
+    """
+    username = models.CharField(
+        'username',
+        max_length=150,
+        null=True,
+        blank=True
+    )  # , unique=True)
+    email = models.EmailField(
+        'email address',
+        unique=True
+    )
+    google_token = models.TextField(
+        null=True,
+        blank=True
+    )  # unique=True
+    # is_active = True  # inherited
+    # is_active = models.BooleanField(
+    #     'active',
+    #     default=False,
+    #     help_text=_(
+    #         'Designates whether this user should be treated as active. '
+    #         'Unselect this instead of deleting accounts.'
+    #     ),
+    # )
+    is_admin = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(
+        'date joined',
+        default=timezone.now
+    )
+
+    EMAIL_FIELD = 'email'
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()
+
+
+    class Meta:
+        db_table = 'custom_users'
+
+    def __str__(self):
+        return f'Custom user - {self.email}'
+
+    # 3 метода внизу треба для адмінки (вона їх шототам вимагає)
+    def has_perm(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    @property
+    def is_staff(self):
+        "Is the user a member of staff?"
+        # Simplest possible answer: All admins are staff
+        return self.is_admin
 
 
 class Group(models.Model):

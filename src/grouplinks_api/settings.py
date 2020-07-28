@@ -25,7 +25,7 @@ SECRET_KEY = '$oq+k-=m98u-ryv8kfkc%&_k)1ms(b7duu+$zo6m!dix4-b5kv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', 'grouplinksm.com']
 
 
 # Application definition
@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'corsheaders',
-
     'rest_framework',
+
     'groups',
 ]
 
@@ -59,7 +59,7 @@ ROOT_URLCONF = 'grouplinks_api.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -130,3 +130,6 @@ STATIC_URL = '/static/'
 
 # Django CORS
 CORS_ORIGIN_ALLOW_ALL = True
+
+# Custom user model
+AUTH_USER_MODEL = 'groups.CustomUser'
