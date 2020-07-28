@@ -77,6 +77,13 @@ class Group(models.Model):
     Group model
     Represents group of links (like folder)
     """
+    owner = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        verbose_name="Group's owner",
+        related_name="groups",
+        null=True  # may be a problem because of unique_together
+    )
     name = models.CharField(
         verbose_name="Group's name",
         max_length=150,
@@ -98,9 +105,9 @@ class Group(models.Model):
 
     class Meta:
         db_table = 'groups'
-        # unique_together = [
-        #     ['name', 'user_id']
-        # ]
+        unique_together = [
+            ['name', 'owner']
+        ]
 
     def __str__(self):
         return f'Group: {self.name=}'
