@@ -11,7 +11,9 @@ from .models import Group, Link
 from .serializers import GroupWithNestedSerializer, LinkWithNestedSerializer
 
 
-class GroupViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
+# pylint: disable=no-member
+# pylint: disable=too-many-ancestors
+class GroupViewSet(viewsets.ModelViewSet):
     """
     Group viewset
     """
@@ -75,7 +77,7 @@ class GroupViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     #         return super(self, UserViewSet).get_permissions()
 
 
-class LinkViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
+class LinkViewSet(viewsets.ModelViewSet):
     """
     Link viewset
     """
