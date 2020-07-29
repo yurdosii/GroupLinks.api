@@ -13,9 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.urls import path, include
+from django.contrib import admin
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('auth/', include('rest_framework_social_oauth2.urls')),
+    path('auth/logout/', LogoutView.as_view(next_page=settings.LOGOUT_REDIRECT_URL), name='logout'),
     path('api/v1/', include('groups.urls')),
-    path('api-auth/', include('rest_framework.urls')),
 ]
