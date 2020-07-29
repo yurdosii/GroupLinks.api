@@ -5,20 +5,18 @@ API ViewSets
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-# from rest_framework import status
+from rest_framework import status
 # from django.shortcuts import get_object_or_404
 from .models import Group, Link
 from .serializers import GroupWithNestedSerializer, LinkWithNestedSerializer
 
 
-# custom ViewSet for this 2 identical ViewSet
 class GroupViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     """
     Group viewset
     """
     queryset = Group.objects.all()
     permission_classes = [
-        # permissions.AllowAny
         permissions.IsAuthenticated
     ]
     serializer_class = GroupWithNestedSerializer
@@ -34,46 +32,40 @@ class GroupViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
         serializer = self.get_serializer(recent_groups, many=True)
         return Response(serializer.data)
 
-    # def list(self, request):
-    #     # import pdb; pdb.set_trace()
+    def list(self, request, *args, **kwargs):
+        if not request.user.is_admin:  # is_staff
+            self.queryset = self.queryset.filter(owner=request.user)
 
-    #     # if not request.user.is_admin:  # is_staff
-    #     #     self.queryset = self.queryset.filter(owner=request.user)
+        return super(GroupViewSet, self).list(self, request, *args, **kwargs)
 
-    #     # serializer = GroupWithNestedSerializer(self.queryset, many=True)
-    #     # return Response(serializer.data)
-    #     return super(GroupViewSet, self).list(self, request)
+    def retrieve(self, request, pk=None):
+        instance = self.get_object()
 
-    # def retrieve(self, request, pk=None):
-    #     # ! питання - в двох з super(), тут без
-    #     # group = self.get_object()
+        if not request.user.is_admin and instance.owner != request.user:
+            response_data = {"detail": "You aren't the owner."}
+            return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
-    #     # if group.owner != request.user and not group.owner.is_admin:
-    #     #     response_data = {"detail": "You aren't the group owner."}
-    #     #     return Response(response_data, status=status.HTTP_403_FORBIDDEN)
+        return super(GroupViewSet, self).retrieve(self, request, pk=pk)
 
-    #     # serializer = GroupWithNestedSerializer(group)
-    #     # return Response(serializer.data)
+    #! can't test without token authentication
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
 
-    #     return super(GroupViewSet, self).retrieve(self, request, pk=pk)
+        if not request.user.is_admin and instance.owner != request.user:
+            response_data = {"detail": "Forbidden to update. You aren't the owner"}
+            return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
-    # def update(self, request, *args, **kwargs):
-    #     # group = self.get_object()
+        return super(GroupViewSet, self).update(self, request, *args, **kwargs)
 
-    #     # if group.owner != request.user and not group.owner.is_admin:
-    #     #     response_data = {"detail": "Forbidden to update. You aren't the group owner"}
-    #     #     return Response(response_data, status=status.HTTP_403_FORBIDDEN)
+    #! can't test without token authentication
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
 
-    #     return super(GroupViewSet, self).update(self, request, *args, **kwargs)
+        if not request.user.is_admin and instance.owner != request.user:
+            response_data = {"detail": "Forbidden to delete. You aren't the owner"}
+            return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
-    # def destroy(self, request, *args, **kwargs):
-    #     # group = self.get_object()
-
-    #         # if group.owner != request.user and not group.owner.is_admin:
-    #     #     response_data = {"detail": "Forbidden to delete. You aren't the group owner"}
-    #     #     return Response(response_data, status=status.HTTP_403_FORBIDDEN)
-
-    #     return super(GroupViewSet, self).destroy(self, request, *args, **kwargs)
+        return super(GroupViewSet, self).destroy(self, request, *args, **kwargs)
 
 
     # def get_permissions(self): / get_serializer_class(self)
@@ -94,4 +86,3 @@ class LinkViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     ]
     serializer_class = LinkWithNestedSerializer
 
-    # same methods
