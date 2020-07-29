@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['0.0.0.0', 'localhost', 'grouplinksm.com']
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -39,6 +40,11 @@ INSTALLED_APPS = [
 
     'corsheaders',
     'rest_framework',
+
+    # OAuth
+    'oauth2_provider',  # 2 migrations
+    'social_django',  # 10 migrations
+    'rest_framework_social_oauth2',
 
     'groups',
 ]
@@ -59,7 +65,8 @@ ROOT_URLCONF = 'grouplinks_api.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        # 'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,6 +74,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                # OAuth
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -128,8 +139,75 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
 # Django CORS
 CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:8000'
+#     'http://127.0.0.1:8000'
+# ]
+
+
+# DRF
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+    ]
+}
+
+AUTHENTICATION_BACKENDS = (
+    # Google OAuth2
+    'social_core.backends.google.GoogleOAuth2',
+
+    # django-rest-framework-social-oauth2
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+
+    # Django
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# Google configuration
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get("GROUPLINKS_GOOGLE_CLIENT_ID")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("GROUPLINKS_GOOGLE_CLIENT_SECRET")
+
+# https://python-social-auth.readthedocs.io/en/latest/configuration/django.html#database
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+
+# SOCIAL_AUTH_GOOGLE_OAUTH2_USE_UNIQUE_USER_ID = True  #? питання
+# SOCIAL_AUTH_URL_NAMESPACE = 'social_auth'
+
+# набір функцій які будуть виконуватися під час авторизації
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+
+    # Send a validation email to the user to verify its email address.
+    # Disabled by default.
+    'social_core.pipeline.mail.mail_validation',
+
+    # Associates the current social details with another user account with
+    # a similar email address. Disabled by default.
+    # ! later
+    # https://python-social-auth.readthedocs.io/en/latest/use_cases.html#associate-users-by-email
+    # 'social_core.pipeline.social_auth.associate_by_email',
+
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+
+# Urls
+LOGIN_URL = '/auth/login/google-oauth2/'  # SOCIAL_AUTH_LOGIN_URL = '/api/v1/links/'
+LOGIN_REDIRECT_URL = '/home_page/'  # SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/api/v1/groups/'
+LOGOUT_REDIRECT_URL = '/api/v1/'  #! Change later
 
 # Custom user model
 AUTH_USER_MODEL = 'groups.CustomUser'

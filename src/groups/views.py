@@ -18,8 +18,8 @@ class GroupViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     """
     queryset = Group.objects.all()
     permission_classes = [
-        permissions.AllowAny
-        # permissions.IsAuthenticated
+        # permissions.AllowAny
+        permissions.IsAuthenticated
     ]
     serializer_class = GroupWithNestedSerializer
 
@@ -89,8 +89,8 @@ class LinkViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     """
     queryset = Link.objects.all()
     permission_classes = [
-        permissions.AllowAny
-        # permissions.IsAuthenticated
+        # permissions.AllowAny
+        permissions.IsAuthenticated
     ]
     serializer_class = LinkWithNestedSerializer
 
