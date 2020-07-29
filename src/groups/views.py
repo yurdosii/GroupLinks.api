@@ -36,7 +36,7 @@ class GroupViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
         if not request.user.is_admin:  # is_staff
             self.queryset = self.queryset.filter(owner=request.user)
 
-        return super(GroupViewSet, self).list(self, request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
     def retrieve(self, request, pk=None):
         instance = self.get_object()
@@ -45,7 +45,7 @@ class GroupViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
             response_data = {"detail": "You aren't the owner."}
             return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
-        return super(GroupViewSet, self).retrieve(self, request, pk=pk)
+        return super().retrieve(request, pk=pk)
 
     #! can't test without token authentication
     def update(self, request, *args, **kwargs):
@@ -55,7 +55,7 @@ class GroupViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
             response_data = {"detail": "Forbidden to update. You aren't the owner"}
             return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
-        return super(GroupViewSet, self).update(self, request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
 
     #! can't test without token authentication
     def destroy(self, request, *args, **kwargs):
@@ -65,7 +65,7 @@ class GroupViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
             response_data = {"detail": "Forbidden to delete. You aren't the owner"}
             return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
-        return super(GroupViewSet, self).destroy(self, request, *args, **kwargs)
+        return super().destroy(request, *args, **kwargs)
 
 
     # def get_permissions(self): / get_serializer_class(self)
@@ -86,3 +86,37 @@ class LinkViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     ]
     serializer_class = LinkWithNestedSerializer
 
+    def list(self, request, *args, **kwargs):
+        if not request.user.is_admin:  # is_staff
+            self.queryset = self.queryset.filter(groups__owner=request.user)
+
+        return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, pk=None):
+        instance = self.get_object()
+
+        if not request.user.is_admin and instance.groups.first().owner != request.user:
+            response_data = {"detail": "You aren't the owner."}
+            return Response(response_data, status=status.HTTP_403_FORBIDDEN)
+
+        return super().retrieve(request, pk=pk)
+
+    #! can't test without token authentication
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if not request.user.is_admin and instance.groups.first().owner != request.user:
+            response_data = {"detail": "Forbidden to update. You aren't the owner"}
+            return Response(response_data, status=status.HTTP_403_FORBIDDEN)
+
+        return super().update(request, *args, **kwargs)
+
+    #! can't test without token authentication
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if not request.user.is_admin and instance.groups.first().owner != request.user:
+            response_data = {"detail": "Forbidden to delete. You aren't the owner"}
+            return Response(response_data, status=status.HTTP_403_FORBIDDEN)
+
+        return super().destroy(request, *args, **kwargs)
