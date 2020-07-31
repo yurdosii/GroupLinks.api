@@ -34,7 +34,8 @@ class GroupViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
-        if not request.user.is_admin:  # is_staff
+        # import pdb; pdb.set_trace()
+        if not request.user.is_staff:  # is_staff
             self.queryset = self.queryset.filter(owner=request.user)
 
         return super().list(request, *args, **kwargs)
@@ -42,7 +43,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, pk=None):
         instance = self.get_object()
 
-        if not request.user.is_admin and instance.owner != request.user:
+        if not request.user.is_staff and instance.owner != request.user:
             response_data = {"detail": "You aren't the owner."}
             return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
@@ -52,7 +53,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        if not request.user.is_admin and instance.owner != request.user:
+        if not request.user.is_staff and instance.owner != request.user:
             response_data = {"detail": "Forbidden to update. You aren't the owner"}
             return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
@@ -62,7 +63,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        if not request.user.is_admin and instance.owner != request.user:
+        if not request.user.is_staff and instance.owner != request.user:
             response_data = {"detail": "Forbidden to delete. You aren't the owner"}
             return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
@@ -88,7 +89,7 @@ class LinkViewSet(viewsets.ModelViewSet):
     serializer_class = LinkWithNestedSerializer
 
     def list(self, request, *args, **kwargs):
-        if not request.user.is_admin:  # is_staff
+        if not request.user.is_staff:  # is_staff
             self.queryset = self.queryset.filter(groups__owner=request.user)
 
         return super().list(request, *args, **kwargs)
@@ -96,7 +97,7 @@ class LinkViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, pk=None):
         instance = self.get_object()
 
-        if not request.user.is_admin and instance.groups.first().owner != request.user:
+        if not request.user.is_staff and instance.groups.first().owner != request.user:
             response_data = {"detail": "You aren't the owner."}
             return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
@@ -106,7 +107,7 @@ class LinkViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        if not request.user.is_admin and instance.groups.first().owner != request.user:
+        if not request.user.is_staff and instance.groups.first().owner != request.user:
             response_data = {"detail": "Forbidden to update. You aren't the owner"}
             return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
@@ -116,7 +117,7 @@ class LinkViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        if not request.user.is_admin and instance.groups.first().owner != request.user:
+        if not request.user.is_staff and instance.groups.first().owner != request.user:
             response_data = {"detail": "Forbidden to delete. You aren't the owner"}
             return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 

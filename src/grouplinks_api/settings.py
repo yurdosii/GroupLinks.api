@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     # OAuth
     'oauth2_provider',  # 2 migrations
     'social_django',  # 10 migrations
-    'rest_framework_social_oauth2',
 
     'groups',
 ]
@@ -142,9 +141,15 @@ STATIC_URL = '/static/'
 
 # Django CORS
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+# CORS_EXPOSE_HEADERS = [
+#     "Set-Cookie"
+#     'session',
+# ]
 # CORS_ORIGIN_WHITELIST = [
-#     'http://localhost:8000'
-#     'http://127.0.0.1:8000'
+#     'http://localhost:3000',
+#     # 'http://grouplinksm.com:8000',
+#     # 'http://127.0.0.1:8000',
 # ]
 
 
@@ -154,16 +159,12 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ]
 }
 
 AUTHENTICATION_BACKENDS = (
     # Google OAuth2
     'social_core.backends.google.GoogleOAuth2',
-
-    # django-rest-framework-social-oauth2
-    'rest_framework_social_oauth2.backends.DjangoOAuth2',
 
     # Django
     'django.contrib.auth.backends.ModelBackend',
@@ -177,7 +178,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("GROUPLINKS_GOOGLE_CLIENT_SECR
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
 # SOCIAL_AUTH_GOOGLE_OAUTH2_USE_UNIQUE_USER_ID = True  #? питання
-# SOCIAL_AUTH_URL_NAMESPACE = 'social_auth'
+SOCIAL_AUTH_URL_NAMESPACE = 'social_auth'
 
 # набір функцій які будуть виконуватися під час авторизації
 SOCIAL_AUTH_PIPELINE = (
@@ -205,9 +206,16 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 # Urls
-LOGIN_URL = '/auth/login/google-oauth2/'  # SOCIAL_AUTH_LOGIN_URL = '/api/v1/links/'
-LOGIN_REDIRECT_URL = '/home_page/'  # SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/api/v1/groups/'
+LOGIN_URL = '/social/login/google-oauth2/'  # SOCIAL_AUTH_LOGIN_URL = '/api/v1/links/'
+# LOGIN_REDIRECT_URL = '/home_page/'  # SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/api/v1/groups/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/handle_redirect'  # SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/api/v1/'
 LOGOUT_REDIRECT_URL = '/api/v1/'  #! Change later
 
 # Custom user model
 AUTH_USER_MODEL = 'groups.CustomUser'
+
+# SESSION_COOKIE_HTTPONLY = True
+# CSRF_COOKIE_HTTPONLY = True
+# CSRF_COOKIE_SECURE = True
+
+SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ['main_page_url']
