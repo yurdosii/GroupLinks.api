@@ -124,7 +124,9 @@ class Link(models.Model):
         verbose_name="Link to the source (video / article / ...)"
     )
     description = models.TextField(
-        verbose_name='Description about link'
+        verbose_name='Description about link',
+        null=True,
+        blank=True
     )
     groups = models.ManyToManyField(
         Group,
