@@ -33,6 +33,9 @@ class GroupViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(recent_groups, many=True)
         return Response(serializer.data)
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
     def list(self, request, *args, **kwargs):
         # import pdb; pdb.set_trace()
         if not request.user.is_staff:  # is_staff
