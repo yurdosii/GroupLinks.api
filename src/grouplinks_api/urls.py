@@ -18,9 +18,18 @@ from django.urls import path, include
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 
+
+from groups.views_auth import handle_redirect
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/', include('rest_framework_social_oauth2.urls')),
+
+    # path('api-auth/', include('rest_framework.urls')),
+    path('handle_redirect/', handle_redirect),
+    path('social/', include('social_django.urls', namespace='social_auth')),
+
     path('auth/logout/', LogoutView.as_view(next_page=settings.LOGOUT_REDIRECT_URL), name='logout'),
+
     path('api/v1/', include('groups.urls')),
 ]

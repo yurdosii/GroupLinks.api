@@ -12,7 +12,6 @@ django-braces==1.14.0
 django-cors-headers==3.4.0
 django-filter==2.3.0
 django-oauth-toolkit==1.3.2
-django-rest-framework-social-oauth2==1.1.0
 djangorestframework==3.11.0
 httpie==2.2.0
 idna==2.10
@@ -33,6 +32,7 @@ pylint==2.5.3
 pylint-django==2.1.0
 pylint-plugin-utils==0.6
 pyparsing==2.4.7
+python-social-auth==0.3.6
 python3-openid==3.2.0
 pytz==2020.1
 requests==2.24.0
