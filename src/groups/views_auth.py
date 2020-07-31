@@ -3,7 +3,7 @@ Views that handles auth urls
 """
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect
 
 
 def handle_redirect(request):
@@ -22,3 +22,13 @@ def handle_redirect(request):
         # response.set_signed_cookie('csrftoken', request.COOKIES.get('csrftoken'))
 
     return render(request, 'social_auth_a.html', {})
+
+def check_login(request):
+    """
+    Check whether user is authenticated
+    """
+
+    if request.user.is_authenticated:
+        return JsonResponse({'login': True})
+
+    return JsonResponse({'login': False})
