@@ -19,13 +19,14 @@ from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 
 
-from groups.views_auth import handle_redirect
+from groups.views_auth import handle_redirect, check_login
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # path('api-auth/', include('rest_framework.urls')),
+    path('check_login/', check_login),
     path('handle_redirect/', handle_redirect),
     path('social/', include('social_django.urls', namespace='social_auth')),
 
