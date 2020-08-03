@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from .models import CustomUser, Group, Link
 from .serializers import (
     GroupWithNestedSerializer,
-    LinkWithNestedSerializer,
+    LinkBaseSerializer,
     CustomUserAdminSerializer,
 )
 
@@ -92,7 +92,7 @@ class LinkViewSet(viewsets.ModelViewSet):
         # permissions.AllowAny
         permissions.IsAuthenticated
     ]
-    serializer_class = LinkWithNestedSerializer
+    serializer_class = LinkBaseSerializer
 
     def list(self, request, *args, **kwargs):
         if not request.user.is_staff:  # is_staff

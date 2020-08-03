@@ -40,7 +40,7 @@ class LinkBaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Link
-        fields = ('id', 'url', 'description', 'isDone', 'added')
+        fields = ('id', 'url', 'description', 'isDone', 'added', 'group')
 
 
 class GroupWithNestedSerializer(GroupBaseSerializer):
@@ -52,14 +52,3 @@ class GroupWithNestedSerializer(GroupBaseSerializer):
 
     class Meta(GroupBaseSerializer.Meta):
         fields = GroupBaseSerializer.Meta.fields + ('links', 'owner')
-
-
-class LinkWithNestedSerializer(LinkBaseSerializer):
-    """
-    Link serializer with nested group
-    """
-    # groups = GroupBaseSerializer(many=True)
-    # (треба щоб коли вводжу то міг вводити лише id групи, а коли виводжу то виводило все)
-
-    class Meta(LinkBaseSerializer.Meta):
-        fields = LinkBaseSerializer.Meta.fields + ('groups', )
