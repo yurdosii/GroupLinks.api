@@ -49,6 +49,7 @@ class CustomUser(AbstractBaseUser):
 
 
     class Meta:
+        ordering = ['id']
         db_table = 'custom_users'
 
     def __str__(self):
@@ -106,6 +107,7 @@ class Group(models.Model):
     # position (drag and drop)
 
     class Meta:
+        ordering = ['id']
         db_table = 'groups'
         unique_together = [
             ['name', 'owner']
@@ -145,6 +147,7 @@ class Link(models.Model):
     # position (drag and drop)
 
     class Meta:
+        ordering = ['id']
         db_table = 'links'
 
     def __str__(self):
