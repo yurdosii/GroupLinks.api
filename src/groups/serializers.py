@@ -6,14 +6,21 @@ from rest_framework import serializers
 from groups.models import CustomUser, Group, Link
 
 
-class CustomUserSerializer(serializers.ModelSerializer):
+class CustomUserBaseSerializer(serializers.ModelSerializer):
     """
-    CustomUser serializer
+    CustomUser base serializer
     """
     class Meta:
-        ordering = ['name']
         model = CustomUser
         fields = ('id', 'username', 'email', 'date_joined')
+
+
+class CustomUserAdminSerializer(CustomUserBaseSerializer):
+    """
+    CustomUser serializer for admin
+    """
+    class Meta(CustomUserBaseSerializer.Meta):
+        fields = '__all__'
 
 
 class GroupBaseSerializer(serializers.ModelSerializer):
@@ -21,7 +28,6 @@ class GroupBaseSerializer(serializers.ModelSerializer):
     Group base serializer
     """
     class Meta:
-        ordering = ['name']
         model = Group
         fields = ('id', 'name', 'description', 'created')
 
@@ -33,7 +39,6 @@ class LinkBaseSerializer(serializers.ModelSerializer):
     isDone = serializers.BooleanField(source='is_done')
 
     class Meta:
-        ordering = ['id']
         model = Link
         fields = ('id', 'url', 'description', 'isDone', 'added')
 
@@ -42,7 +47,7 @@ class GroupWithNestedSerializer(GroupBaseSerializer):
     """
     Group serializer with nested links
     """
-    owner = CustomUserSerializer(read_only=True)
+    owner = CustomUserBaseSerializer(read_only=True)
     links = LinkBaseSerializer(many=True, read_only=True)
 
     class Meta(GroupBaseSerializer.Meta):
