@@ -2,10 +2,9 @@
 API ViewSets
 """
 
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 from .models import CustomUser, Group, Link
 from .serializers import (
     GroupWithNestedSerializer,
@@ -131,11 +130,14 @@ class LinkViewSet(viewsets.ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-from rest_framework import mixins
-
 class CustomUserViewSet(mixins.RetrieveModelMixin,
                         mixins.ListModelMixin,
                         viewsets.GenericViewSet):
+    """
+    CustomUser viewset
+    Provides `retrieve`, and `list` actions.
+    Available only for admins
+    """
     queryset = CustomUser.objects.all()
     permission_classes = [
         permissions.IsAdminUser
