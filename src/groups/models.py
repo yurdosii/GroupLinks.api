@@ -130,9 +130,10 @@ class Link(models.Model):
         null=True,
         blank=True
     )
-    groups = models.ManyToManyField(
+    group = models.ForeignKey(
         Group,
-        verbose_name="Many to many relationship with group",
+        on_delete=models.CASCADE,
+        verbose_name="Link's group",
         related_name="links",
     )
     is_done = models.BooleanField(
