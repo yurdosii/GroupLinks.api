@@ -2,12 +2,16 @@
 API ViewSets
 """
 
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import status
-from .models import Group, Link
-from .serializers import GroupWithNestedSerializer, LinkWithNestedSerializer
+from django.shortcuts import get_object_or_404
+from .models import CustomUser, Group, Link
+from .serializers import (
+    GroupWithNestedSerializer,
+    LinkWithNestedSerializer,
+    CustomUserAdminSerializer,
+)
 
 
 # pylint: disable=no-member
@@ -125,3 +129,15 @@ class LinkViewSet(viewsets.ModelViewSet):
             return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
         return super().destroy(request, *args, **kwargs)
+
+
+from rest_framework import mixins
+
+class CustomUserViewSet(mixins.RetrieveModelMixin,
+                        mixins.ListModelMixin,
+                        viewsets.GenericViewSet):
+    queryset = CustomUser.objects.all()
+    permission_classes = [
+        permissions.IsAdminUser
+    ]
+    serializer_class = CustomUserAdminSerializer
