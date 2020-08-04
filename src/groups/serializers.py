@@ -27,9 +27,12 @@ class GroupBaseSerializer(serializers.ModelSerializer):
     """
     Group base serializer
     """
+    owner = CustomUserBaseSerializer(read_only=True)
+    linksLength = serializers.IntegerField(source='links.count')
+
     class Meta:
         model = Group
-        fields = ('id', 'name', 'description', 'created')
+        fields = ('id', 'name', 'description', 'created', 'owner', 'linksLength')
 
 
 class LinkBaseSerializer(serializers.ModelSerializer):
@@ -47,8 +50,7 @@ class GroupWithNestedSerializer(GroupBaseSerializer):
     """
     Group serializer with nested links
     """
-    owner = CustomUserBaseSerializer(read_only=True)
     links = LinkBaseSerializer(many=True, read_only=True)
 
     class Meta(GroupBaseSerializer.Meta):
-        fields = GroupBaseSerializer.Meta.fields + ('links', 'owner')
+        fields = GroupBaseSerializer.Meta.fields + ('links', )
