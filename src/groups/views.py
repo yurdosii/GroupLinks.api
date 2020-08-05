@@ -5,6 +5,7 @@ API ViewSets
 from rest_framework import viewsets, permissions, status, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework_extensions.mixins import NestedViewSetMixin
 from .models import CustomUser, Group, Link
 from .serializers import (
     GroupWithNestedSerializer,
@@ -15,7 +16,7 @@ from .serializers import (
 
 # pylint: disable=no-member
 # pylint: disable=too-many-ancestors
-class GroupViewSet(viewsets.ModelViewSet):
+class GroupViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     """
     Group viewset
     """
@@ -46,14 +47,14 @@ class GroupViewSet(viewsets.ModelViewSet):
 
         return super().list(request, *args, **kwargs)
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
 
         if not request.user.is_staff and instance.owner != request.user:
             response_data = {"detail": "You aren't the owner."}
             return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
-        return super().retrieve(request, pk=pk)
+        return super().retrieve(request, *args, **kwargs)
 
     #! can't test without token authentication
     def update(self, request, *args, **kwargs):
@@ -83,7 +84,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     #         return super(self, UserViewSet).get_permissions()
 
 
-class LinkViewSet(viewsets.ModelViewSet):
+class LinkViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     """
     Link viewset
     """
@@ -100,14 +101,14 @@ class LinkViewSet(viewsets.ModelViewSet):
 
         return super().list(request, *args, **kwargs)
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
 
         if not request.user.is_staff and instance.groups.first().owner != request.user:
             response_data = {"detail": "You aren't the owner."}
             return Response(response_data, status=status.HTTP_403_FORBIDDEN)
 
-        return super().retrieve(request, pk=pk)
+        return super().retrieve(request, *args, **kwargs)
 
     #! can't test without token authentication
     def update(self, request, *args, **kwargs):
