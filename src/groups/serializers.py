@@ -28,11 +28,11 @@ class GroupBaseSerializer(serializers.ModelSerializer):
     Group base serializer
     """
     owner = CustomUserBaseSerializer(read_only=True)
-    # linksLength = serializers.IntegerField(source='links.count')
+    linksLength = serializers.IntegerField(source='links.count')
 
     class Meta:
         model = Group
-        fields = ('id', 'name', 'description', 'created', 'owner')  # , 'linksLength')
+        fields = ('id', 'name', 'description', 'created', 'owner', 'linksLength')
 
 
 class LinkBaseSerializer(serializers.ModelSerializer):
