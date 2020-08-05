@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 from .models import CustomUser, Group, Link
 from .serializers import (
+    GroupBaseSerializer,
     GroupWithNestedSerializer,
     LinkBaseSerializer,
     CustomUserAdminSerializer,
@@ -24,7 +25,7 @@ class GroupViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     permission_classes = [
         permissions.IsAuthenticated
     ]
-    serializer_class = GroupWithNestedSerializer
+    # serializer_class = GroupWithNestedSerializer
 
     @action(detail=False) # "/groups/recent_groups"
     def recent_groups(self, request):
@@ -76,6 +77,10 @@ class GroupViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         return super().destroy(request, *args, **kwargs)
 
+    def get_serializer_class(self):
+        if self.action in ['list']:
+            return GroupBaseSerializer
+        return GroupWithNestedSerializer
 
     # def get_permissions(self): / get_serializer_class(self)
     #     if self.action in ['retrieve', '']:
