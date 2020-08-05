@@ -25,7 +25,7 @@ class GroupViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     permission_classes = [
         permissions.IsAuthenticated
     ]
-    serializer_class = GroupWithNestedSerializer
+    # serializer_class = GroupWithNestedSerializer
 
     @action(detail=False) # "/groups/recent_groups"
     def recent_groups(self, request):
